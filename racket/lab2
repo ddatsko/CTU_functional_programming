@@ -1,0 +1,24 @@
+#lang racket
+
+(require racket/trace)
+
+(define (average-list lst [sum 0] [number 0])
+  (cond
+    ([and (null? lst) (eqv? number 0)] 0)
+    ([null? lst] (/ sum number))
+    (else (average-list (cdr lst) (+ sum (car lst)) (+ number 1)))))
+
+
+
+(define (split-list n lst [acc '()])
+  (cond
+    ([null? lst] (reverse (map reverse acc)))
+    ([null? acc] (split-list n (cdr lst) `((,(car lst)))))
+    (else (if
+           (eqv? (length (car acc)) n)
+           (split-list n lst (cons '() acc))
+           (split-list n (cdr lst) (cons (cons (car lst) (car acc)) (cdr acc)))))))
+
+
+(define (n-block-average n lst)
+  (map average-list (split-list n lst)))
